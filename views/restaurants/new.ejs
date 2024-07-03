@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Restaurant</title>
+</head>
+<body>
+    <form action="/restaurants" method="POST">
+        <div>
+            <label for="title">Title</label>
+            <!-- You can have restaurant[property] as the name. If everything is stored this way in the POST, the body information will be stored in an object called restaurant. Interesting because this is the format for an array. But this is just convention in HTML. This is useful when you are transferring multiple objects in the body. -->
+            <input type="text" id="title" name="restaurant[title]">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="restaurant[location]">
+        </div>
+        <button>Add Restaurant</button>
+    </form>
+    <a href="/restaurants">Cancel</a>
+</body>
+</html>
