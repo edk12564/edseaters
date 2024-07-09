@@ -1,23 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Restaurant</title>
-</head>
-<body>
-    <form action="/restaurants" method="POST">
-        <div>
-            <label for="title">Title</label>
-            <!-- You can have restaurant[property] as the name. If everything is stored this way in the POST, the body information will be stored in an object called restaurant. Interesting because this is the format for an array. But this is just convention in HTML. This is useful when you are transferring multiple objects in the body. -->
-            <input type="text" id="title" name="restaurant[title]">
-        </div>
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="restaurant[location]">
-        </div>
-        <button>Add Restaurant</button>
-    </form>
-    <a href="/restaurants">Cancel</a>
-</body>
-</html>
+<% layout('layouts/boilerplate') %>
+
+<div class="row">
+    <h1 class="text-center">New Restaurant</h1>
+    <div class="col-6 offset-3">
+        <form action="/restaurants" method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <!-- You can have restaurant[property] as the name. If everything is stored this way in the POST, the body information will be stored in an object called restaurant. Interesting because this is the format for an array. But this is just convention in HTML. This is useful when you are transferring multiple objects in the body. -->
+                <input class="form-control" type="text" id="title" name="restaurant[title]">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="restaurant[location]">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="image">Image URL</label>
+                <input class="form-control" type="text" id="image" name="restaurant[image]">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Restaurant Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control" aria-label="price" id="price" name="restaurant[price]" placeholder="0.00">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="location" name="restaurant[description]"></textarea>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Add Restaurant</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<a href="/restaurants">Cancel</a>

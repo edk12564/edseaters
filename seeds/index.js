@@ -46,6 +46,9 @@ const seedDB = async() => {
         const entry = new Restaurant({
             title: `${sample(descriptors)} ${sample(places)}`,
             location: `${randCity.city}, ${randCity.state}`,
+            image: 'https://placehold.co/600x400/png',
+            description: 'No description',
+            price: 0.00
         })
         await entry.save();
     }

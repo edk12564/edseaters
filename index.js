@@ -4,6 +4,7 @@ const app = express();
 const path =require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const engine = require('ejs-mate');
 
 // Import the restaurant model from /models/restaurant.js
 const Restaurant = require('./models/restaurant');
@@ -26,7 +27,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/edseats')
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
-
+// Setup EJS Mate engine for parsing EJS. 
+app.engine('ejs', engine);
 
 
 
