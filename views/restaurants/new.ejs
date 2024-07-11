@@ -3,30 +3,46 @@
 <div class="row">
     <h1 class="text-center">New Restaurant</h1>
     <div class="col-6 offset-3">
-        <form action="/restaurants" method="POST">
+        <form action="/restaurants" method="POST" novalidate class="needs-validation">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <!-- You can have restaurant[property] as the name. If everything is stored this way in the POST, the body information will be stored in an object called restaurant. Interesting because this is the format for an array. But this is just convention in HTML. This is useful when you are transferring multiple objects in the body. -->
-                <input class="form-control" type="text" id="title" name="restaurant[title]">
+                 <!-- Let's require everything and novalidate to disable default HTML and enable Bootstrap required. These are just basic client side validations. -->
+                <input class="form-control" type="text" id="title" name="restaurant[title]" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name="restaurant[location]">
+                <input class="form-control" type="text" id="location" name="restaurant[location]" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="image">Image URL</label>
-                <input class="form-control" type="text" id="image" name="restaurant[image]">
+                <input class="form-control" type="text" id="image" name="restaurant[image]" required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="price">Restaurant Price</label>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="text" class="form-control" aria-label="price" id="price" name="restaurant[price]" placeholder="0.00">
+                    <input type="text" class="form-control" aria-label="price" id="price" name="restaurant[price]" placeholder="0.00" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="location" name="restaurant[description]"></textarea>
+                <textarea class="form-control" type="text" id="location" name="restaurant[description]" required></textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
             </div>
             <div class="mb-3">
                 <button class="btn btn-success">Add Restaurant</button>
