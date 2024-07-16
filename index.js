@@ -5,10 +5,12 @@ const path =require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const engine = require('ejs-mate');
-const Joi = require('joi');
 
 // Import the restaurant model from /models/restaurant.js
 const Restaurant = require('./models/restaurant');
+
+// Import review model from /models/revew.js
+const Review = require('./models/review');
 
 // Import the catchAsync function from /utils/catchAsync.js
 const catchAsync = require('./utils/catchAsync');
@@ -16,8 +18,11 @@ const catchAsync = require('./utils/catchAsync');
 // Import ExpressError class from /utils/ExpressError.js
 const ExpressError = require('./utils/ExpressError');
 
-// Import restaurantSchema for validation (Joi)
+// Import restaurantSchema for restaurant validation (Joi)
 const restaurantSchema = require('./validation/restaurantSchema');
+
+// Import restaurantSchema for review validation (Joi)
+const reviewSchema = require('./validation/reviewSchema');
 
 
 
@@ -53,7 +58,19 @@ app.use(methodOverride('_method'));
 const validateRestaurantData = (req, res, next) => {
     const { error } = restaurantSchema.validate(req.body);
     if(error) {
-        // error.message gives an array of messages, so we map then join to get them in one string
+        // error.details gives an array of messages, so we map then join to get them in one string
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    }
+    else {
+        next();
+    }
+}
+
+// Validation function for reviews
+const validateReviewData = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if(error) {
         const msg = error.details.map(el => el.message).join(',');
         throw new ExpressError(msg, 400);
     }
@@ -82,6 +99,8 @@ app.get('/makerestaurant', validateRestaurantData, catchAsync(async (req, res) =
     res.send('Placeholder for restaurant just added');
 }))
 
+// Restaurant Routing
+
 // Index
 app.get('/restaurants', catchAsync(async (req, res) => {
     const restaurants = await Restaurant.find({})
@@ -104,7 +123,7 @@ app.post('/restaurants', validateRestaurantData, catchAsync(async (req, res) => 
 // Show
 app.get('/restaurants/:id', catchAsync(async (req, res) => {
     const id = req.params.id;
-    const restaurant = await Restaurant.findById(id);
+    const restaurant = await Restaurant.findById(id).populate('reviews');
     res.render('restaurants/show', { restaurant });
 }))
 
@@ -128,6 +147,35 @@ app.delete('/restaurants/:id', catchAsync(async (req, res) => {
     await Restaurant.findByIdAndDelete(id);
     res.redirect('/restaurants');
 }))
+
+// Review Routing
+
+// Create
+app.post('/restaurants/:id/reviews', validateReviewData, catchAsync(async (req, res) => {
+    const restaurant = await Restaurant.findById(req.params.id);
+    const review = new Review(req.body.review);
+    restaurant.reviews.push(review);
+    await review.save();
+    await restaurant.save();
+    res.redirect(`/restaurants/${restaurant.id}`);
+}))
+
+// Read is in the same page as Restaurant
+
+// Update is not implemented yet.
+
+// Delete
+// Route like this so we can get the id and reviewId for deletion.
+app.delete('/restaurants/:id/reviews/:reviewId', catchAsync(async(req, res) => {
+    const { id, reviewId } = req.params;
+    const restaurant = await Restaurant.findById(id);
+    const review = await Review.findById(reviewId);
+    // Mongo code to pull and delete the item you specified
+    await Restaurant.findByIdAndUpdate(id, {$pull: { reviews: reviewId }})
+    await Review.findByIdAndDelete(reviewId)
+    res.redirect(`/restaurants/${id}`);
+}))
+
 
 // Invalid Route
 app.all('*', (req, res, next) => {
