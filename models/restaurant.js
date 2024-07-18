@@ -19,6 +19,7 @@ const restaurantSchema = new Schema({
 
 
 
+// Middleware for Restaurant.findOneAndDelete().
 restaurantSchema.post('findOneAndDelete', async function (restaurant) {
     if (restaurant.reviews) {
         await review.deleteMany({
