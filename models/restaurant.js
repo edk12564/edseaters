@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const review = require('./review');
 const Schema = mongoose.Schema;
 
-const restaurantSchema = new Schema({
+const RestaurantSchema = new Schema({
     title: String,
     image: String,
     price: Number,
@@ -20,7 +20,7 @@ const restaurantSchema = new Schema({
 
 
 // Middleware for Restaurant.findOneAndDelete().
-restaurantSchema.post('findOneAndDelete', async function (restaurant) {
+RestaurantSchema.post('findOneAndDelete', async function (restaurant) {
     if (restaurant.reviews) {
         await review.deleteMany({
             _id: {
@@ -32,4 +32,4 @@ restaurantSchema.post('findOneAndDelete', async function (restaurant) {
 
 
 
-module.exports = mongoose.model('Restaurant', restaurantSchema);
+module.exports = mongoose.model('Restaurant', RestaurantSchema);

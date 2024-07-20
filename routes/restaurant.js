@@ -6,7 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Restaurant = require('../models/restaurant');
 const restaurantSchema = require('../validation/restaurantSchema');
-
+const isLoggedIn = require('../middleware/isLoggedIn');
 
 
 
@@ -32,12 +32,12 @@ router.get('/', catchAsync(async (req, res) => {
 }))
 
 // New
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('restaurants/new');
 })
 
 // Create
-router.post('/', validateRestaurantData, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateRestaurantData, catchAsync(async (req, res) => {
     // We do req.body.restaurant because we formatted our new.ejs form to hold information in an object.
     const newRestaurant = new Restaurant(req.body.restaurant);
     await newRestaurant.save()
@@ -58,7 +58,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 }))
 
 // Edit
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const id = req.params.id;
     const restaurant = await Restaurant.findById(id);
     if(!restaurant) {
@@ -69,7 +69,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 }))
 
 // Update
-router.put('/:id', validateRestaurantData, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateRestaurantData, catchAsync(async (req, res) => {
     const id = req.params.id;
     await Restaurant.findByIdAndUpdate(id, {...req.body.restaurant});
     req.flash('success', 'Successfully updated your restaurant!');
@@ -77,7 +77,7 @@ router.put('/:id', validateRestaurantData, catchAsync(async (req, res) => {
 }))
 
 // Delete
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Restaurant.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted your restaurant!');
