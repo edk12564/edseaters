@@ -4,31 +4,19 @@ const express= require('express');
 // Merge our params so we get access to the restaurant id from our app.js file.
 const router = express.Router({ mergeParams: true });
 const catchAsync = require('../utils/catchAsync');
-const ExpressError = require('../utils/ExpressError');
 const Review = require('../models/review');
 const Restaurant = require('../models/restaurant');
-const reviewSchema = require('../validation/reviewSchema');
-
-
-
-// Validation function for reviews
-const validateReviewData = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    }
-    else {
-        next();
-    }
-}
+const validateReviewData = require('../middleware/validateReviewData');
+const isLoggedIn = require('../middleware/isLoggedIn');
+const isAuthorizedReview = require('../middleware/isAuthorizedReview');
 
 
 
 // Create
-router.post('/', validateReviewData, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, isAuthorizedReview, validateReviewData, catchAsync(async (req, res) => {
     const restaurant = await Restaurant.findById(req.params.id);
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     restaurant.reviews.push(review);
     await review.save();
     await restaurant.save();
@@ -42,7 +30,7 @@ router.post('/', validateReviewData, catchAsync(async (req, res) => {
 
 // Delete
 // Route like this so we can get the id and reviewId for deletion.
-router.delete('/:reviewId', catchAsync(async(req, res) => {
+router.delete('/:reviewId', isLoggedIn, isAuthorizedReview, catchAsync(async(req, res) => {
     const { id, reviewId } = req.params;
     const restaurant = await Restaurant.findById(id);
     const review = await Review.findById(reviewId);

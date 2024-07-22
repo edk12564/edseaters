@@ -48,7 +48,8 @@ const seedDB = async() => {
             location: `${randCity.city}, ${randCity.state}`,
             image: 'https://placehold.co/600x400/png',
             description: 'No description',
-            price: 0.00
+            price: 0.00,
+            author: "669b27067307e96de4a55978"
         })
         await entry.save();
     }

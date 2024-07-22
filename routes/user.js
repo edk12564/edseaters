@@ -10,7 +10,7 @@ const storeReturnTo = require('../middleware/storeReturnTo');
 
 
 
-// // Validation function for reviews
+// Code the validation for users with the template code below from validateReviewData.
 // const validateReviewData = (req, res, next) => {
 //     const { error } = reviewSchema.validate(req.body);
 //     if(error) {
@@ -69,5 +69,7 @@ router.get('/logout', (req, res, next) => {
         res.redirect('/restaurants');
     });
 }); 
+
+
 
 module.exports = router;

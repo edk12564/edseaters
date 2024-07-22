@@ -10,37 +10,46 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-muted"><%= restaurant.location%>
+                <li class="list-group-item">Submitted by: <%=restaurant.author.username%></li>
                 <li class="list-group-item">$<%=restaurant.price%>/night</li>
             </ul>
+            <!-- If someone is signed in get their id. if the user id and the id of the class match. then we will show these buttons.-->
+            <% if(currentUser && restaurant.author.equals(currentUser._id)) { %>
             <div class="card-body">
                 <a class="card-link btn btn-info" href="/restaurants/<%=restaurant._id%>/edit">Edit</a>
                 <form class="d-inline" action="/restaurants/<%=restaurant._id%>?_method=DELETE" method="POST">
                     <button class="btn btn-danger">Delete</button>
                 </form>     
             </div>
+            <% } %>
         </div>
     </div>
     <div class="col-6">
-        <h2>Leave a Review</h2>
-        <form action="/restaurants/<%=restaurant._id%>/reviews" method="POST" class="mb-3 needs-validation" novalidate> 
-            <div class="mb-3">
-                <label class="form-label" for="rating">Rating</label>  
-                <input class="form-control" type="range" min="1" max="5" name="review[rating]" id="rating">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="body">Review</label>
-                <textarea class="form-control" name="review[body]" id="body" rows="3" cols="30" required></textarea>
-            </div>
-            <button class="btn btn-success">Submit</button>
-        </form>
+        <% if(currentUser) { %>
+            <h2>Leave a Review</h2>
+            <form action="/restaurants/<%=restaurant._id%>/reviews" method="POST" class="mb-3 needs-validation" novalidate> 
+                <div class="mb-3">
+                    <label class="form-label" for="rating">Rating</label>  
+                    <input class="form-control" type="range" min="1" max="5" name="review[rating]" id="rating">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" rows="3" cols="30" required></textarea>
+                </div>
+                <button class="btn btn-success">Submit</button>
+            </form>
+        <% } %>
         <% for (let review of restaurant.reviews) {%>
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Rating: <%= review.rating %></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By <%= review.author.username %></h5>
                     <p class="card-text">Review: <%= review.body %></p>
-                    <form action="/restaurants/<%=restaurant._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <% if(currentUser && review.author.equals(currentUser._id)) { %>
+                        <form action="/restaurants/<%=restaurant._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    <% } %>
                 </div>
             </div>
         <%}%>

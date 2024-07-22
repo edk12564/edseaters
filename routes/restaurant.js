@@ -3,25 +3,10 @@
 const express= require('express');
 const router = express.Router({ mergeParams: true });
 const catchAsync = require('../utils/catchAsync');
-const ExpressError = require('../utils/ExpressError');
 const Restaurant = require('../models/restaurant');
-const restaurantSchema = require('../validation/restaurantSchema');
 const isLoggedIn = require('../middleware/isLoggedIn');
-
-
-
-// Validate with Joi. We can use the restaurantSchema from our validation folder to validate restaurant creates and edits below.
-const validateRestaurantData = (req, res, next) => {
-    const { error } = restaurantSchema.validate(req.body);
-    if(error) {
-        // error.details gives an array of messages, so we map then join to get them in one string
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    }
-    else {
-        next();
-    }
-}
+const isAuthorized = require('../middleware/isAuthorized');
+const validateRestaurantData = require('../middleware/validateRestaurantData');
 
 
 
@@ -40,6 +25,7 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.post('/', isLoggedIn, validateRestaurantData, catchAsync(async (req, res) => {
     // We do req.body.restaurant because we formatted our new.ejs form to hold information in an object.
     const newRestaurant = new Restaurant(req.body.restaurant);
+    newRestaurant.author = req.user._id;
     await newRestaurant.save()
     req.flash('success', 'Successfully made a new campground!');
     res.redirect(`restaurants/${newRestaurant._id}`);
@@ -48,7 +34,10 @@ router.post('/', isLoggedIn, validateRestaurantData, catchAsync(async (req, res)
 // Show
 router.get('/:id', catchAsync(async (req, res) => {
     const id = req.params.id;
-    const restaurant = await Restaurant.findById(id).populate('reviews');
+    // Populate the reviews and author ObjectIds. Also populate the author in the reviews object.
+    const restaurant = await Restaurant.findById(id).populate({
+        path: 'reviews', populate: {path: 'author'}
+    }).populate('author');
     // So if someone accesses an id that does not exist
     if(!restaurant) {
         req.flash('error', 'Cannot find that restaurant!');
@@ -58,7 +47,7 @@ router.get('/:id', catchAsync(async (req, res) => {
 }))
 
 // Edit
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthorized, catchAsync(async (req, res) => {
     const id = req.params.id;
     const restaurant = await Restaurant.findById(id);
     if(!restaurant) {
@@ -69,7 +58,7 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
 }))
 
 // Update
-router.put('/:id', isLoggedIn, validateRestaurantData, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthorized, validateRestaurantData, catchAsync(async (req, res) => {
     const id = req.params.id;
     await Restaurant.findByIdAndUpdate(id, {...req.body.restaurant});
     req.flash('success', 'Successfully updated your restaurant!');
@@ -77,11 +66,13 @@ router.put('/:id', isLoggedIn, validateRestaurantData, catchAsync(async (req, re
 }))
 
 // Delete
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthorized, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Restaurant.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted your restaurant!');
     res.redirect('/restaurants');
 }))
+
+
 
 module.exports = router;
