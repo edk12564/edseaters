@@ -7,68 +7,22 @@ const User = require('../models/user');
 const userSchema = require('../validation/userSchema');
 const passport = require('passport');
 const storeReturnTo = require('../middleware/storeReturnTo');
-
-
-
-// Code the validation for users with the template code below from validateReviewData.
-// const validateReviewData = (req, res, next) => {
-//     const { error } = reviewSchema.validate(req.body);
-//     if(error) {
-//         const msg = error.details.map(el => el.message).join(',');
-//         throw new ExpressError(msg, 400);
-//     }
-//     else {
-//         next();
-//     }
-// }
+const userController = require('../controllers/users');
 
 
 
 // Register
-router.get('/register', (req, res) => {
-    res.render('auth/register');
-})
-
-router.post('/register', async (req, res) => {
-    try {
-        const { email, username, password } = req.body;
-        const user = new User({ email, username });
-        const registeredUser = await User.register(user, password);
-        req.login(registeredUser, err => {
-            if (err) {
-                return next(err);
-            }
-            req.flash('success', 'Welcome to edseats!');
-            res.redirect('/restaurants');
-        })
-    } catch(e) {
-        req.flash('error', e.message);
-        res.redirect('register');
-    }
-})
+router.route('/register')
+    .get(userController.renderRegister)
+    .post(userController.register);
 
 // Login
-router.get('/login', (req, res) => {
-    res.render('auth/login');
-})
-
-// For the authentication step, we can use Passport middleware
-router.post('/login', storeReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
-    req.flash('success', 'Welcome back!');
-    const redirectUrl = res.locals.returnTo || '/restaurants';
-    res.redirect(redirectUrl);
-})
+router.route('/login')
+    .get(userController.renderLogin)
+    .post(storeReturnTo, passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), userController.login);
 
 // Logout
-router.get('/logout', (req, res, next) => {
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        req.flash('success', 'Goodbye!');
-        res.redirect('/restaurants');
-    });
-}); 
+router.get('/logout', userController.logout); 
 
 
 
