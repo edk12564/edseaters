@@ -8,13 +8,15 @@ const isLoggedIn = require('../middleware/isLoggedIn');
 const isAuthorized = require('../middleware/isAuthorized');
 const validateRestaurantData = require('../middleware/validateRestaurantData');
 const restaurantController = require('../controllers/restaurants');
-
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 
 // Index/Create
 router.route('/')
     .get(catchAsync(restaurantController.index))
-    .post(isLoggedIn, validateRestaurantData, catchAsync(restaurantController.createRestaurant))
+    .post(isLoggedIn, upload.array('image'), validateRestaurantData, catchAsync(restaurantController.createRestaurant))
 
 // New
 router.get('/new', isLoggedIn, restaurantController.renderNewForm);
@@ -25,7 +27,7 @@ router.get('/:id/edit', isLoggedIn, isAuthorized, catchAsync(restaurantControlle
 // Show/Update/Delete
 router.route('/:id')
     .get(catchAsync(restaurantController.showRestaurant))
-    .put(isLoggedIn, isAuthorized, validateRestaurantData, catchAsync(restaurantController.updateRestaurant))
+    .put(isLoggedIn, isAuthorized, upload.array('image'), validateRestaurantData, catchAsync(restaurantController.updateRestaurant))
     .delete(isLoggedIn, isAuthorized, catchAsync(restaurantController.delete))
 
 

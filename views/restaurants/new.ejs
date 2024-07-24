@@ -3,7 +3,7 @@
 <div class="row">
     <h1 class="text-center">New Restaurant</h1>
     <div class="col-6 offset-3">
-        <form action="/restaurants" method="POST" novalidate class="needs-validation">
+        <form action="/restaurants" method="POST" novalidate class="needs-validation" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <!-- You can have restaurant[property] as the name. If everything is stored this way in the POST, the body information will be stored in an object called restaurant. Interesting because this is the format for an array. But this is just convention in HTML. This is useful when you are transferring multiple objects in the body. -->
@@ -16,13 +16,6 @@
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
                 <input class="form-control" type="text" id="location" name="restaurant[location]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="image">Image URL</label>
-                <input class="form-control" type="text" id="image" name="restaurant[image]" required>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -42,6 +35,15 @@
                 <textarea class="form-control" type="text" id="location" name="restaurant[description]" required></textarea>
                 <div class="valid-feedback">
                     Looks good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="mb-2">
+                    <label for="image">Upload Images</label>
+                </div>
+                <!-- Bootstrap 5 lets us skip bs-custom-file-input -->
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="image" multiple>
                 </div>
             </div>
             <div class="mb-3">

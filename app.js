@@ -2,11 +2,15 @@
 
 
 
+//  
+if(process.env.NODE_ENV!== "production") {
+    require('dotenv').config();
+}
 
 // Imports
 const express= require('express');
 const app = express();
-const path =require('path');
+const path = require('path');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const engine = require('ejs-mate');

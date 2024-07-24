@@ -1,4 +1,5 @@
 const Restaurant = require('../models/restaurant');
+const { cloudinary } = require('../cloudinary');
 
 module.exports.index = async (req, res) => {
     const restaurants = await Restaurant.find({})
@@ -12,6 +13,7 @@ module.exports.renderNewForm = (req, res) => {
 module.exports.createRestaurant = async (req, res) => {
     // We do req.body.restaurant because we formatted our new.ejs form to hold information in an object.
     const newRestaurant = new Restaurant(req.body.restaurant);
+    newRestaurant.images = req.files.map(f => ({url: f.path, filename: f.filename}))
     newRestaurant.author = req.user._id;
     await newRestaurant.save()
     req.flash('success', 'Successfully made a new campground!');
@@ -44,7 +46,16 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateRestaurant = async (req, res) => {
     const id = req.params.id;
-    await Restaurant.findByIdAndUpdate(id, {...req.body.restaurant});
+    const restaurant = await Restaurant.findByIdAndUpdate(id, {...req.body.restaurant});
+    const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
+    restaurant.images.push(...imgs); 
+    await restaurant.save();
+    if(req.body.deleteImages) {
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+        }
+        await restaurant.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages}}}})
+    }
     req.flash('success', 'Successfully updated your restaurant!');
     res.redirect(`/restaurants/${id}`);
 };

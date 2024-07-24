@@ -46,7 +46,12 @@ const seedDB = async() => {
         const entry = new Restaurant({
             title: `${sample(descriptors)} ${sample(places)}`,
             location: `${randCity.city}, ${randCity.state}`,
-            image: 'https://placehold.co/600x400/png',
+            images: [
+                {
+                  url: 'https://res.cloudinary.com/dwexbbnm6/image/upload/v1721829643/edseats/exxy4eorfwwc605g6txq.jpg',
+                  filename: 'edseats/exxy4eorfwwc605g6txq',
+                }
+              ],
             description: 'No description',
             price: 0.00,
             author: "669b27067307e96de4a55978"
