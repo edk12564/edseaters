@@ -1,4 +1,5 @@
 const Review = require('../models/review');
+const Restaurant = require('../models/restaurant');
 
 module.exports.createReview = async (req, res) => {
     const restaurant = await Restaurant.findById(req.params.id);
