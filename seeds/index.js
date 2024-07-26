@@ -87,8 +87,8 @@ const seedDB = async() => {
             location: restaurants[i].address,
             images: [
                 {
-                  url: 'https://res.cloudinary.com/dwexbbnm6/image/upload/v1721829643/edseats/exxy4eorfwwc605g6txq.jpg',
-                  filename: 'edseats/exxy4eorfwwc605g6txq',
+                  url: 'https://images.unsplash.com/photo-1523218475566-ea0db0c23067?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGRpc2h8ZW58MHx8MHx8fDA%3D',
+                  filename: 'edseats/exxy4eorfwwc605g6txb',
                 }
               ],
             description: restaurants[i].description,

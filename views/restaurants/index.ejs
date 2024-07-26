@@ -1,9 +1,10 @@
 <% layout('layouts/boilerplate') %>
 
-<div id="map" style="width: 100%; height: 500px;"></div>
+<link rel="stylesheet" href="styles/index.css">
 
-<h1>All Restaurants</h1>
-
+<h1 class="justify-content-center mb-3">Restaurants</h1>
+<div id="cluster-map" class="mb-3"></div>
+<h1 class="mb-2">Our picks:</h1>
 <% for (let restaurant of restaurants) { %>
     <div class="card mb-3">
         <div class="row">
@@ -11,9 +12,9 @@
                 <img src="<%=restaurant.images[0].url%>" alt="" class="img-fluid">
             </div>
             <div class="col-md-8">
-                <div class="card-body">
+                <div class="card-body mt-4">
                     <h5 class="card-title"><%=restaurant.title%></h5>
-                    <p class="card-text"><%=restaurant.description%></p>
+                    <p class="card-text description"><%=restaurant.description%></p>
                     <p class="card-text">
                         <small class="text-muted"><%=restaurant.location%></small>
                     </p>
@@ -24,7 +25,7 @@
     </div>
 <%}%>
 
-<a href="/restaurants/new">Add a new restaurant</a>
+<a href="/restaurants/new" class="">Add new restaurant</a>
 
 <script> 
     const mbxToken = '<%-process.env.MAPBOX_TOKEN%>'; 

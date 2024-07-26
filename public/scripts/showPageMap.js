@@ -7,6 +7,9 @@ const map = new mapboxgl.Map({
     zoom: 10, 
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.FullscreenControl());
+
 // Add a marker on the map for our restaurant location
 new mapboxgl.Marker()
     .setLngLat(restaurant.geometry.coordinates)
