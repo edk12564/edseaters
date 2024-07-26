@@ -30,7 +30,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-muted"><%= restaurant.location%></li>
                 <li class="list-group-item">Submitted by: <%=restaurant.author.username%></li>
-                <li class="list-group-item">$<%=restaurant.price%>/night</li>
+                <li class="list-group-item">$<%=restaurant.price%></li>
             </ul>
             <!-- If someone is signed in get their id. if the user id and the id of the class match. then we will show these buttons.-->
             <% if(currentUser && restaurant.author.equals(currentUser._id)) { %>

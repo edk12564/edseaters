@@ -26,39 +26,75 @@ mongoose.connect('mongodb://127.0.0.1:27017/edseats')
         console.log(error);
     })
 
-
-
-
-
-// Import the seed and seedHelper
-const cities = require('./cities');
-const {places, descriptors } = require('./seedHelpers');
-
-const sample = (array) => {
-    return array[Math.floor(Math.random() * array.length)]
+//  If not in prod, load the environment variables
+if(process.env.NODE_ENV!== "production") {
+    require('dotenv').config();
 }
 
-// Write a function to empty the database and fill it with random entries
+
+
+// // Import the seed and seedHelper
+// const cities = require('./cities');
+// const {places, descriptors } = require('./seedHelpers');
+
+// const sample = (array) => {
+//     return array[Math.floor(Math.random() * array.length)]
+// }
+
+// // Write a function to empty the database and fill it with random entries
+// const seedDB = async() => {
+//     await Restaurant.deleteMany({});
+//     for (let i = 0; i < 50; i++) {
+//         const randCity = sample(cities);
+//         const entry = new Restaurant({
+//             title: `${sample(descriptors)} ${sample(places)}`,
+//             location: `${randCity.city}, ${randCity.state}`,
+//             images: [
+//                 {
+//                   url: 'https://res.cloudinary.com/dwexbbnm6/image/upload/v1721829643/edseats/exxy4eorfwwc605g6txq.jpg',
+//                   filename: 'edseats/exxy4eorfwwc605g6txq',
+//                 }
+//               ],
+//             description: 'No description',
+//             price: 0.00,
+//             author: "669b27067307e96de4a55978",
+//             geometry: {
+//                 type: 'Point',
+//                 coordinates: [-96.79,32.77]
+//             }
+//         })
+//         await entry.save();
+//     }
+// }
+
+// Lets use restaurant data instead of campground data
+const restaurants = require('./restaurants')
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mbxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mbxToken });
+
+
+// Eventually I want to add more restaurants beyond just Dallas. That way we can have a cool cluster map showing all around the world.
 const seedDB = async() => {
     await Restaurant.deleteMany({});
-    for (let i = 0; i < 50; i++) {
-        const randCity = sample(cities);
+    for (let i = 0; i < restaurants.length; i++) {
+        let geoData = await geocoder.forwardGeocode({
+            query: restaurants[i].address,
+            limit: 1
+        }).send()
         const entry = new Restaurant({
-            title: `${sample(descriptors)} ${sample(places)}`,
-            location: `${randCity.city}, ${randCity.state}`,
+            title: restaurants[i].name,
+            location: restaurants[i].address,
             images: [
                 {
                   url: 'https://res.cloudinary.com/dwexbbnm6/image/upload/v1721829643/edseats/exxy4eorfwwc605g6txq.jpg',
                   filename: 'edseats/exxy4eorfwwc605g6txq',
                 }
               ],
-            description: 'No description',
-            price: 0.00,
+            description: restaurants[i].description,
+            price: restaurants[i].price,
             author: "669b27067307e96de4a55978",
-            geometry: {
-                type: 'Point',
-                coordinates: [-96.79,32.77]
-            }
+            geometry: geoData.body.features[0].geometry
         })
         await entry.save();
     }

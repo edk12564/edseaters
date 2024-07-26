@@ -13,6 +13,9 @@ ImageSchema.virtual('thumbnail').get(function() {
     return this.url.replace('/upload', '/upload/w_200');
 })
 
+// This is how we keep virtuals when we JSON.stringify. We need this to access for map functionality.
+const opts = { toJSON: { virtuals: true } };
+
 const RestaurantSchema = new Schema({
     title: String,
     images: [ImageSchema],
@@ -38,6 +41,17 @@ const RestaurantSchema = new Schema({
           type: [Number],
         }
     }
+}, opts);
+
+
+
+// Virtual to access property for easy geodata information access.
+RestaurantSchema.virtual('properties.popUpMarkup').get(function() {
+    return `
+    <h4>${this.title}</h2>
+    <p>${this.description.substring(0,100)}...</p>
+    <strong><a href="/restaurants/${this._id}">View Restaurant</a></strong>
+    `
 })
 
 
