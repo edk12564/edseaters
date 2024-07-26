@@ -54,7 +54,11 @@ const seedDB = async() => {
               ],
             description: 'No description',
             price: 0.00,
-            author: "669b27067307e96de4a55978"
+            author: "669b27067307e96de4a55978",
+            geometry: {
+                type: 'Point',
+                coordinates: [-96.79,32.77]
+            }
         })
         await entry.save();
     }

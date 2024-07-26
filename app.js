@@ -2,7 +2,7 @@
 
 
 
-//  
+//  If not in prod, load the environment variables
 if(process.env.NODE_ENV!== "production") {
     require('dotenv').config();
 }
@@ -18,6 +18,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+
 
 // Import the restaurant model from /models/restaurant.js
 const Restaurant = require('./models/restaurant');

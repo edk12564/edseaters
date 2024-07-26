@@ -1,6 +1,11 @@
 const Restaurant = require('../models/restaurant');
 const { cloudinary } = require('../cloudinary');
 
+// Mapbox
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mbxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mbxToken });
+
 module.exports.index = async (req, res) => {
     const restaurants = await Restaurant.find({})
     res.render('restaurants/index', { restaurants });
@@ -11,8 +16,13 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createRestaurant = async (req, res) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.restaurant.location,
+        limit: 1
+    }).send()
     // We do req.body.restaurant because we formatted our new.ejs form to hold information in an object.
     const newRestaurant = new Restaurant(req.body.restaurant);
+    newRestaurant.geometry = geoData.body.features[0].geometry;
     newRestaurant.images = req.files.map(f => ({url: f.path, filename: f.filename}))
     newRestaurant.author = req.user._id;
     await newRestaurant.save()

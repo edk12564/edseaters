@@ -4,6 +4,7 @@
 
 <div class="row">
     <div class="col-6">
+        <div id='map' style='width: 400px; height: 300px;'></div>
         <div id="restaurantCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <% restaurant.images.forEach((img, i) => { %>
@@ -87,4 +88,10 @@
     </div>
 </div>
 
+<script> 
+    const mbxToken = '<%-process.env.MAPBOX_TOKEN%>'; 
+    // Transfer the restaurant data to a json file that can be access by public. This will show an error, but this is because VSCode doesnt like using javascript functions inside of ejs. If you ctrl+k and then s, it will save without formatting. Which allows this to run.
+    const restaurant = <%-JSON.stringify(restaurant)%>;
+</script>
 
+<script src="/scripts/showPageMap.js"></script>
