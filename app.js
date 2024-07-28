@@ -2,7 +2,7 @@
 
 
 
-//  If not in prod, load the environment variables
+//  If not in prod, load the environment variables.
 if(process.env.NODE_ENV!== "production") {
     require('dotenv').config();
 }
@@ -18,26 +18,16 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 
-// Import the restaurant model from /models/restaurant.js
-const Restaurant = require('./models/restaurant');
-// Import review model from /models/revew.js
-const Review = require('./models/review');
+
 // Import user model from /models/user.js
 const User = require('./models/user');
 
-// Import the catchAsync function from /utils/catchAsync.js
-const catchAsync = require('./utils/catchAsync');
 // Import ExpressError class from /utils/ExpressError.js
 const ExpressError = require('./utils/ExpressError');
-
-// Import restaurantSchema for restaurant validation (Joi)
-const restaurantSchema = require('./validation/restaurantSchema');
-// Import restaurantSchema for review validation (Joi)
-const reviewSchema = require('./validation/reviewSchema');
-// Import userSchema for review validation
-// Do later
 
 // Import routes from ./routes/restaurants.js
 const restaurantRoutes = require('./routes/restaurant');
@@ -45,8 +35,6 @@ const restaurantRoutes = require('./routes/restaurant');
 const reviewRoutes = require('./routes/review');
 // Import route from ./routes/users.js
 const userRoutes = require('./routes/user'); 
-
-
 
 
 
@@ -74,6 +62,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 // Setup static directory in public
 app.use(express.static(path.join(__dirname, 'public')));
+// Sanitize to prevent injections
+app.use(mongoSanitize());
 
 
 
@@ -81,6 +71,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session configs
 const sessionConfig = {
+    // This can create issues if you browser already has a session cookie with a different name. I fixed this by loading in incognito.
+    name: 'blah', 
     // Make this secret better later.
     secret: 'secret',
     resave: false,
@@ -88,6 +80,7 @@ const sessionConfig = {
     // store: mongo store implement later.
     cookie: {
         httpOnly: true,
+        // secure: true, Comment this out later when you are deploying.
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -117,6 +110,58 @@ app.use((req, res, next) => {
     res.locals.error = req.flash('error');
     next();
 })
+
+
+
+// Defend our HTML headers with Helmet
+app.use(helmet());
+
+// Helmet directives for contentDeliveryPolicy
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net"
+    
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dwexbbnm6/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
 
 
 
