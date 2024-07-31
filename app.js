@@ -20,6 +20,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const MongoStore = require('connect-mongo');
 
 
 
@@ -39,7 +40,11 @@ const userRoutes = require('./routes/user');
 
 
 // Connect to Mongoose Server
-mongoose.connect('mongodb://127.0.0.1:27017/edseats')
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/edseats';
+
+mongoose.connect(dbUrl)
+// For when we deploy and use our Mongoose Cloud Database
+// mongoose.connect('dbUrl')
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, 'connection error:'));
@@ -69,12 +74,28 @@ app.use(mongoSanitize());
 
 // Authentication
 
+// Store session information in our Mongo Cloud
+const secret = process.env.SECRET || 'secret';
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: secret,
+    },
+    touchAfter: 24 * 60 * 60
+})
+
+store.on('error', function (e) {
+    console.log ('Session Store Error', e);
+})
+
 // Session configs
 const sessionConfig = {
     // This can create issues if you browser already has a session cookie with a different name. I fixed this by loading in incognito.
     name: 'blah', 
+    store,
     // Make this secret better later.
-    secret: 'secret',
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     // store: mongo store implement later.
@@ -198,6 +219,8 @@ app.use((err, req, res, next) => {
 
 
 // Start the server
-app.listen(3000, () => {
-    console.log('Serving on port 3000');
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`);
 })
