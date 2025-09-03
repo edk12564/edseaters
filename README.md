@@ -29,24 +29,24 @@ EdSeats is a full-stack web application for finding, reviewing, and arguing abou
 # Architecture
 
 `edseats/` <br><br>
-    # Main application entry point <br>
-    app.js <br>
-    # Request handling and business logic <br>
-    controllers/ <br>
-    # Custom middleware functions (e.g., authentication, logging) <br>
-    middleware/ <br>
-    # Database schemas and data models (Mongoose) <br>
-    models/ <br>
-    # API endpoint and route definitions <br>
-    routes/ <br>
-    # Server-side templates (EJS) <br>
-    views/ <br>
-    # Static assets (CSS, client-side JS, images) <br>
-    public/ <br>
-    # Utility and helper functions <br>
-    utils/ <br>
-    # Data validation schemas <br>
-    validation/ <br>
+# Main application entry point <br>
+app.js <br>
+# Request handling and business logic <br>
+controllers/ <br>
+# Custom middleware functions (e.g., authentication, logging) <br>
+middleware/ <br>
+# Database schemas and data models (Mongoose) <br>
+models/ <br>
+# API endpoint and route definitions <br>
+routes/ <br>
+# Server-side templates (EJS) <br>
+views/ <br>
+# Static assets (CSS, client-side JS, images) <br>
+public/ <br>
+# Utility and helper functions <br>
+utils/ <br>
+# Data validation schemas <br>
+validation/ <br>
 
 # Getting Started
 
