@@ -1,130 +1,117 @@
 # EdSeats
 
+Because deciding where to eat shouldn't be harder than your data structures final.
+
 # What does this program do?
 
-EdSeats is a full-stack web application for restaurant discovery, reviews, and management. Users can explore restaurants, add new ones, upload photos, leave reviews, and discover hidden gems in their area.
+EdSeats is a full-stack web application for finding, reviewing, and arguing about your favorite restaurants. Users can browse a collection of eateries, add new hidden gems, upload food pics that make everyone jealous, and leave brutally honest reviews.
 
 # Features
 
-- Restaurant Discovery: Browse and search through a curated collection of restaurants
-- Interactive Maps: Mapbox integration with cluster maps for restaurant locations
-- User Reviews & Ratings: Leave detailed reviews with star ratings
-- Image Management: Cloudinary-powered image uploads with automatic thumbnails
-- User Authentication: Secure login/registration system with Passport.js
-- CRUD Operations: Create, read, update, and delete restaurants and reviews
-- Responsive Design: Bootstrap-powered UI that works on all devices
-- Geolocation: Store and display restaurant coordinates for mapping
-- Authorization: Users can only edit their own content
+- **Restaurant Discovery:** Browse and search through restaurants so you can finally answer "where do you want to eat?"
+- **Interactive Cluster Maps:** Mapbox integration to see where the good food is, without having to squint.
+- **User Reviews & Ratings:** Leave detailed reviews with a 1-5 star rating system.
+- **Image Uploads:** Cloudinary-powered so you can upload your food pics and have them not look terrible.
+- **User Authentication:** Secure login/registration with Passport.js, because we're not animals.
+- **Full CRUD:** Create, read, update, and delete restaurants and reviews (but only your own, you monster).
+- **Responsive Design:** Looks good on your phone while you're standing in line for a burrito.
 
 # Tech Stack
 
-- Node.js - JavaScript runtime that makes everything possible
-- Express.js - Web framework that doesn't make you want to cry
-- MongoDB - NoSQL database for flexible data storage
-- Mongoose - MongoDB object modeling that actually makes sense
-- EJS - Template engine for server-side rendering
-- Passport.js - Authentication middleware that handles the hard stuff
-- Cloudinary - Cloud image management and optimization
-- Mapbox - Maps and geolocation services
-- Bootstrap - CSS framework that makes things look good without effort
+- **Node.js** - The JavaScript runtime that powers this whole thing.
+- **Express.js** - Web framework that's surprisingly pleasant to use.
+- **MongoDB** - NoSQL database for when you don't feel like defining a schema.
+- **Mongoose** - Lets you pretend MongoDB has schemas.
+- **EJS** - Template engine for putting variables into your HTML.
+- **Passport.js** - Authentication middleware that does the heavy lifting.
+- **Cloudinary** - For all your cloud-based image management needs.
+- **Mapbox** - Puts the "map" in "cluster map."
+- **Bootstrap** - So your frontend doesn't look like it's from 1998.
 
 # Architecture
 
-edseats/
-├── app.js                 # Main application entry point
-├── controllers/           # Business logic and request handling
-├── middleware/            # Authentication, validation, and security
-├── models/                # Database schemas and models
-├── routes/                # API endpoint definitions
-├── views/                 # EJS templates and frontend
-├── public/                # Static assets (CSS, JS, images)
-├── utils/                 # Helper functions and error handling
-├── validation/            # Data validation schemas
-└── cloudinary/            # Image upload configuration
+`edseats/` <br><br>
+    # Where the magic begins <br>
+    app.js <br>
+    # The brains of the operation <br>
+    controllers/ <br>
+    # The bouncers for your routes <br>
+    middleware/ <br>
+    # How your data is structured <br>
+    models/ <br>
+    # The road map for your API <br>
+    routes/ <br>
+    # What the user actually sees (EJS files) <br>
+    views/ <br>
+    # CSS, client-side JS, images <br>
+    public/ <br>
+    # Reusable helper functions <br>
+    utils/ <br>
+    # Schemas to keep user input in check <br>
+    validation/ <br>
 
 # Getting Started
 
 # Prerequisites
-- Node.js (version 14 or higher)
-- MongoDB database (local or cloud)
-- Cloudinary account for image storage
-- Mapbox API key for maps
+- Node.js (v14 or higher)
+- MongoDB (running locally or on a server somewhere)
+- A Cloudinary account
+- A Mapbox API key
 
 # Setup
-1. Clone this repository
-2. Install dependencies
-3. Set up your environment variables in a `.env` file:
-        DB_URL=mongodb://localhost:27017/edseats
-        SECRET=secret_key_here
-        CLOUDINARY_CLOUD_NAME=cloudinary_name
-        CLOUDINARY_KEY=cloudinary_key
-        CLOUDINARY_SECRET=cloudinary_secret
-        MAPBOX_TOKEN=mapbox_token
+1. Clone this repository.
+2. Install the dependencies with `npm install`.
+3. Create a `.env` file in the root and add your secrets:
+    ```bash
+    DB_URL=mongodb://localhost:27017/edseats
+    SECRET=a_super_secret_key_for_sessions
+    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+    CLOUDINARY_KEY=your_cloudinary_key
+    CLOUDINARY_SECRET=your_cloudinary_secret
+    MAPBOX_TOKEN=your_mapbox_token
+    ```
+4. Start the server with `node app.js` (or `nodemon` if you're not a barbarian).
+5. Open your browser to `http://localhost:3000`.
 
-4. Start the application
-5. Open your browser and navigate to `http://localhost:3000`
+# Database
 
-## Database
-
-The app uses MongoDB with Mongoose ODM. The main collections are:
-- Users: User accounts and authentication data
-- Restaurants: Restaurant information, images, and geolocation
-- Reviews: User reviews with ratings and timestamps
+The app uses MongoDB with Mongoose. The main collections are:
+- **Users:** Stores user accounts and hashed passwords.
+- **Restaurants:** Holds restaurant info, locations, and image URLs.
+- **Reviews:** Contains user reviews, ratings, and timestamps.
 
 # API Endpoints
 
 # Authentication
-- `GET /login` - Login page
-- `POST /login` - User authentication
-- `GET /register` - Registration page
-- `POST /register` - User registration
-- `GET /logout` - User logout
+- `GET /login` & `POST /login` - The usual login stuff.
+- `GET /register` & `POST /register` - For new foodies.
+- `GET /logout` - For when you're done.
 
 # Restaurants
-- `GET /restaurants` - List all restaurants with map
-- `GET /restaurants/new` - Create new restaurant form
-- `POST /restaurants` - Create new restaurant
-- `GET /restaurants/:id` - View restaurant details
-- `GET /restaurants/:id/edit` - Edit restaurant form
-- `PUT /restaurants/:id` - Update restaurant
-- `DELETE /restaurants/:id` - Delete restaurant
+- `GET /restaurants` - See all the restaurants.
+- `GET /restaurants/new` & `POST /restaurants` - Add a new spot.
+- `GET /restaurants/:id` - View a specific restaurant's details.
+- `GET /restaurants/:id/edit` & `PUT /restaurants/:id` - Fix a mistake.
+- `DELETE /restaurants/:id` - Nuke a restaurant from orbit (if you created it).
 
 # Reviews
-- `POST /restaurants/:id/reviews` - Add review to restaurant
-- `DELETE /restaurants/:id/reviews/:reviewId` - Delete review
+- `POST /restaurants/:id/reviews` - Leave your opinion.
+- `DELETE /restaurants/:id/reviews/:reviewId` - Take back what you said.
 
 # Key Features Explained
 
 # Interactive Maps
-The application uses Mapbox to display restaurant locations on an interactive map. The cluster map automatically groups nearby restaurants and provides popup information when clicked.
+Uses Mapbox to show restaurant locations. Nearby spots are clustered together to keep the map tidy. Click a cluster to zoom in.
 
 # Image Management
-Cloudinary handles all image uploads, automatically generating thumbnails and optimizing images for web display. Users can upload multiple images per restaurant.
+Cloudinary handles image uploads, resizing, and optimization. You can upload multiple images for each restaurant.
 
-# User Authorization
-The app implements a robust authorization system where users can only edit restaurants and reviews they created. This prevents unauthorized modifications and maintains data integrity.
+# Authorization
+You can only edit or delete your own content. Don't even try to mess with someone else's reviews.
 
 # Data Validation
-All user input is validated using Joi schemas and sanitized to prevent XSS attacks and injection vulnerabilities.
-
-# Middleware Stack
-
-- Authentication: Passport.js with local strategy
-- Session Management: Express sessions with MongoDB storage
-- Security: Helmet.js for security headers, MongoDB sanitization
-- File Uploads: Multer with Cloudinary storage
-- Validation: Custom middleware for data validation
-- Error Handling: Centralized error handling with custom error classes
-
-# Frontend
-
-The application uses EJS templates with Bootstrap for styling. The interface is responsive and includes:
-- Navigation bar with authentication status
-- Restaurant cards with images and descriptions
-- Interactive maps for location visualization
-- Forms for creating and editing content
-- Star rating system for reviews
+All user input is validated with Joi schemas to stop you from breaking things, and sanitized to prevent common web attacks.
 
 # Contributing
 
-Found a bug? Want to add a feature? Feel free to contribute!
+Found a bug? Want to add a feature? Feel free to contribute! Just try not to set everything on fire.
