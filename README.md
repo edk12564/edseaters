@@ -1,7 +1,5 @@
 # EdSeats
 
-Because deciding where to eat shouldn't be harder than your data structures final.
-
 # What does this program do?
 
 EdSeats is a full-stack web application for finding, reviewing, and arguing about your favorite restaurants. Users can browse a collection of eateries, add new hidden gems, upload food pics that make everyone jealous, and leave brutally honest reviews.
@@ -31,23 +29,23 @@ EdSeats is a full-stack web application for finding, reviewing, and arguing abou
 # Architecture
 
 `edseats/` <br><br>
-    # Where the magic begins <br>
+    # Main application entry point <br>
     app.js <br>
-    # The brains of the operation <br>
+    # Request handling and business logic <br>
     controllers/ <br>
-    # The bouncers for your routes <br>
+    # Custom middleware functions (e.g., authentication, logging) <br>
     middleware/ <br>
-    # How your data is structured <br>
+    # Database schemas and data models (Mongoose) <br>
     models/ <br>
-    # The road map for your API <br>
+    # API endpoint and route definitions <br>
     routes/ <br>
-    # What the user actually sees (EJS files) <br>
+    # Server-side templates (EJS) <br>
     views/ <br>
-    # CSS, client-side JS, images <br>
+    # Static assets (CSS, client-side JS, images) <br>
     public/ <br>
-    # Reusable helper functions <br>
+    # Utility and helper functions <br>
     utils/ <br>
-    # Schemas to keep user input in check <br>
+    # Data validation schemas <br>
     validation/ <br>
 
 # Getting Started
